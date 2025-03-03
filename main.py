@@ -10,7 +10,6 @@ import threading
 import json
 import requests
 
-
 class Logger:
     def __init__(self):
         self.c = f"{Fore.BLUE}[{Fore.LIGHTBLACK_EX}LOG{Fore.BLUE}]"
@@ -29,7 +28,6 @@ class Logger:
 
 
 class DiscordSpammer:
-    
     def __init__(self):
         self.logger = Logger()
         self.tokens: List[str] = self.load_tokens()
@@ -49,12 +47,11 @@ class DiscordSpammer:
             "Authorization": token,
             "Content-Type": "application/json",
         }
-        payload = json.dumps({"content": message})
-
+        
         response = requests.post(
             f"https://discord.com/api/v10/channels/{channel_id}/messages", 
             headers=headers, 
-            data=payload
+            json={"content": message}
         )
 
         if response.status_code == 200:
@@ -62,7 +59,9 @@ class DiscordSpammer:
                 token, "Message sent successfully", Fore.GREEN
             )
         else:
-            self.logger.error(token, "Failed to send message", response.text)
+            self.logger.error(
+                token, "Failed to send message", response.text
+            )
 
     def start_spam(self, channel_id: str, message: str, amount: int, threads: int) -> None:
         def worker(start: int, end: int, tokens: List[str]):
@@ -76,7 +75,10 @@ class DiscordSpammer:
         for i in range(threads):
             start = i * chunk_size
             end = start + chunk_size if i != threads - 1 else amount
-            thread = threading.Thread(target=worker, args=(start, end, self.tokens))
+            thread = threading.Thread(
+                target=worker, 
+                args=(start, end, self.tokens)
+            )
             thread_list.append(thread)
             thread.start()
         
@@ -94,10 +96,14 @@ if __name__ == "__main__":
         f"{Fore.BLUE}Enter Message > {Style.RESET_ALL}"
     )
     amount = int(
-        input(f"{Fore.BLUE}Enter Amount > {Style.RESET_ALL}"
-    ))
+        input(
+            f"{Fore.BLUE}Enter Amount > {Style.RESET_ALL}"
+        )
+    )
     threads = int(
-        input(f"{Fore.BLUE}Threads > {Style.RESET_ALL}"
-    ))
+        input(
+            f"{Fore.BLUE}Threads > {Style.RESET_ALL}"
+        )
+    )
 
     spammer.start_spam(channel_id, message, amount, threads)
