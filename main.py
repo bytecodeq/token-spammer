@@ -106,4 +106,7 @@ if __name__ == "__main__":
         )
     )
 
-    spammer.start_spam(channel_id, message, amount, threads)
+    spammer.start_spam(channel_id
+                       message
+                       amount
+                       threads )
