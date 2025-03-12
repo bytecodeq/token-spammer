@@ -37,7 +37,7 @@ class DiscordSpammer:
             with open("tokens.txt", "r") as file:
                 return [line.strip() for line in file if line.strip()]
         except FileNotFoundError:
-            print(
+            Logger.error(
                 "tokens.txt not found"
             )
             return []
@@ -106,7 +106,4 @@ if __name__ == "__main__":
         )
     )
 
-    spammer.start_spam(channel_id
-                       message
-                       amount
-                       threads )
+    spammer.start_spam(channel_id, message, amount, threads )
